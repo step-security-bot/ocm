@@ -19,8 +19,13 @@ jobs:
       pull-requests: read
     runs-on: ubuntu-latest
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@63c24ba6bd7ba022e95695ff85de572c04a18142 # v2.7.0
+        with:
+          egress-policy: audit
+
       - name: Verifier action
         id: verifier
-        uses: kubernetes-sigs/kubebuilder-release-tools@v0.3.0
+        uses: kubernetes-sigs/kubebuilder-release-tools@4f3d1085b4458a49ed86918b4b55505716715b77 # v0.3.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}

@@ -24,16 +24,21 @@ jobs:
     name: coverage
     runs-on: ubuntu-latest
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@63c24ba6bd7ba022e95695ff85de572c04a18142 # v2.7.0
+        with:
+          egress-policy: audit
+
       - name: checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
       - name: install Go
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@6edd4406fa81c3da01a34fa6f6343087c207a568 # v3.5.0
         with:
           go-version: ${{ env.GO_VERSION }}
       - name: unit
         run: make test
       - name: report coverage
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@ab904c41d6ece82784817410c45d8b8c02684457 # v3.1.6
         with:
           files: ./coverage.out
           flags: unit
@@ -47,10 +52,15 @@ jobs:
       matrix:
         arch: [ amd64, arm64 ]
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@63c24ba6bd7ba022e95695ff85de572c04a18142 # v2.7.0
+        with:
+          egress-policy: audit
+
       - name: checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
       - name: install Go
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@6edd4406fa81c3da01a34fa6f6343087c207a568 # v3.5.0
         with:
           go-version: ${{ env.GO_VERSION }}
       - name: install imagebuilder
@@ -75,8 +85,13 @@ jobs:
     runs-on: ubuntu-latest
     needs: [ images ]
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@63c24ba6bd7ba022e95695ff85de572c04a18142 # v2.7.0
+        with:
+          egress-policy: audit
+
       - name: checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
       - name: create
         run: |
           echo ${{ secrets.DOCKER_PASSWORD }} | docker login quay.io --username ${{ secrets.DOCKER_USER }} --password-stdin
@@ -139,7 +154,12 @@ jobs:
     name: trigger clusteradm e2e
     runs-on: ubuntu-latest
     steps:
-      - uses: peter-evans/repository-dispatch@v2
+      - name: Harden Runner
+        uses: step-security/harden-runner@63c24ba6bd7ba022e95695ff85de572c04a18142 # v2.7.0
+        with:
+          egress-policy: audit
+
+      - uses: peter-evans/repository-dispatch@bf47d102fdb849e755b0b0023ea3e81a44b6f570 # v2.1.2
         with:
           token: ${{ secrets.OCM_BOT_PAT }}
           repository: open-cluster-management-io/clusteradm
